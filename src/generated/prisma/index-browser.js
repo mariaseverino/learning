@@ -142,8 +142,8 @@ exports.Prisma.CourseScalarFieldEnum = {
   title: 'title',
   description: 'description',
   thumbnailUrl: 'thumbnailUrl',
-  progress: 'progress',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  instructorId: 'instructorId'
 };
 
 exports.Prisma.LessonScalarFieldEnum = {
@@ -151,8 +151,26 @@ exports.Prisma.LessonScalarFieldEnum = {
   title: 'title',
   videoUrl: 'videoUrl',
   order: 'order',
-  done: 'done',
   courseId: 'courseId'
+};
+
+exports.Prisma.LessonCompletionScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  lessonId: 'lessonId',
+  completed: 'completed',
+  completedAt: 'completedAt'
+};
+
+exports.Prisma.InstructorScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  especiality: 'especiality'
+};
+
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
 };
 
 exports.Prisma.SortOrder = {
@@ -175,7 +193,10 @@ exports.Prisma.ModelName = {
   User: 'User',
   RefreshToken: 'RefreshToken',
   Course: 'Course',
-  Lesson: 'Lesson'
+  Lesson: 'Lesson',
+  LessonCompletion: 'LessonCompletion',
+  Instructor: 'Instructor',
+  Category: 'Category'
 };
 
 /**

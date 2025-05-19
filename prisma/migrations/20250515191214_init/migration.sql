@@ -27,8 +27,9 @@ CREATE TABLE "Course" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "thumbnailUrl" TEXT NOT NULL,
-    "progress" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "category" TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "instructorId" TEXT NOT NULL,
 
     CONSTRAINT "Course_pkey" PRIMARY KEY ("id")
 );
@@ -39,10 +40,29 @@ CREATE TABLE "Lesson" (
     "title" TEXT NOT NULL,
     "videoUrl" TEXT NOT NULL,
     "order" SERIAL NOT NULL,
-    "done" BOOLEAN NOT NULL DEFAULT false,
     "courseId" TEXT NOT NULL,
 
     CONSTRAINT "Lesson_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "LessonCompletion" (
+    "id" TEXT NOT NULL,
+    "studentId" TEXT NOT NULL,
+    "lessonId" TEXT NOT NULL,
+    "completed" BOOLEAN NOT NULL,
+    "completedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "LessonCompletion_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Instructor" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "especiality" TEXT NOT NULL,
+
+    CONSTRAINT "Instructor_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -60,13 +80,25 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "refresh_token_userId_key" ON "refresh_token"("userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "LessonCompletion_studentId_lessonId_key" ON "LessonCompletion"("studentId", "lessonId");
+
+-- CreateIndex
 CREATE INDEX "_CourseEnrollment_B_index" ON "_CourseEnrollment"("B");
 
 -- AddForeignKey
 ALTER TABLE "refresh_token" ADD CONSTRAINT "refresh_token_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Course" ADD CONSTRAINT "Course_instructorId_fkey" FOREIGN KEY ("instructorId") REFERENCES "Instructor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Lesson" ADD CONSTRAINT "Lesson_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LessonCompletion" ADD CONSTRAINT "LessonCompletion_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LessonCompletion" ADD CONSTRAINT "LessonCompletion_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lesson"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_CourseEnrollment" ADD CONSTRAINT "_CourseEnrollment_A_fkey" FOREIGN KEY ("A") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;

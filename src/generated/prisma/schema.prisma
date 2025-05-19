@@ -21,7 +21,8 @@ model User {
   refresh_token RefreshToken?
 
   courses Course[] @relation("CourseEnrollment")
-  // progresses         Progress[]
+
+  LessonCompletion LessonCompletion[]
 }
 
 model RefreshToken {
@@ -38,34 +39,52 @@ model Course {
   title        String
   description  String
   thumbnailUrl String
-  progress     Decimal  @default(0)
   createdAt    DateTime @default(now())
 
   lessons  Lesson[]
   students User[]   @relation("CourseEnrollment")
+
+  instructorId String
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+
+  categories Category[] @relation("CourseCategory")
 }
 
 model Lesson {
-  id       String  @id @default(uuid())
+  id       String @id @default(uuid())
   title    String
   videoUrl String
-  order    Int     @default(autoincrement())
-  done     Boolean @default(false)
+  order    Int    @default(autoincrement())
 
   courseId String
   course   Course @relation(fields: [courseId], references: [id])
 
-  // progresses Progress[]
+  completions LessonCompletion[]
 }
 
-// model Progress {
-//   id        String     @id @default(uuid())
-//   userId    String
-//   lessonId  String
-//   completed Boolean
+model LessonCompletion {
+  id        String @id @default(uuid())
+  student   User   @relation(fields: [studentId], references: [id])
+  studentId String
+  lesson    Lesson @relation(fields: [lessonId], references: [id])
+  lessonId  String
 
-//   user      User       @relation(fields: [userId], references: [id])
-//   lesson    Lesson     @relation(fields: [lessonId], references: [id])
+  completed   Boolean
+  completedAt DateTime @default(now())
 
-//   @@unique([userId, lessonId])
-// }
+  @@unique([studentId, lessonId])
+}
+
+model Instructor {
+  id          String @id @default(uuid())
+  name        String
+  especiality String
+
+  Course Course[]
+}
+
+model Category {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  courses Course[] @relation("CourseCategory")
+}
