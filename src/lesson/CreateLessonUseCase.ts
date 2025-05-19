@@ -1,26 +1,28 @@
-import { CourseServices } from '../course/CourseServices';
-import { LessonServices } from './LessonServices';
+import { CourseRepository } from '../course/CourseRepository';
+import { AppError } from '../errors/AppError';
+import { LessonRepository } from './LessonRepository';
 import { CreateLessonInput } from './types';
 
 export class CreateLessonUseCase {
     async execute({ title, videoUrl, courseId }: CreateLessonInput) {
-        const lessonServices = new LessonServices();
-        const lessonAlreadyExists = await lessonServices.findByTitle(title);
+        const lessonRepository = new LessonRepository();
+        const lessonAlreadyExists = await lessonRepository.findByTitle(title);
 
         if (lessonAlreadyExists) {
-            throw new Error('Already exists a lesson with this name!');
+            throw new AppError('A lesson with this name already exists.', 409);
         }
 
-        const courseServices = new CourseServices();
-        const courseExists = await courseServices.findById(courseId);
+        const courseRepository = new CourseRepository();
+        const courseExists = await courseRepository.findById(courseId);
 
         if (!courseExists) {
-            throw new Error(
-                'Unable to create lesson: the specified course does not exist.'
+            throw new AppError(
+                'Unable to create lesson. The specified course does not exist.',
+                404
             );
         }
 
-        await lessonServices.save({
+        await lessonRepository.save({
             title,
             videoUrl,
             courseId,

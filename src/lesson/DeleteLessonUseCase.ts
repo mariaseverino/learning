@@ -1,21 +1,25 @@
-import { LessonServices } from './LessonServices';
+import { AppError } from '../errors/AppError';
+import { LessonRepository } from './LessonRepository';
 
 export class DeleteLessonUseCase {
     async execute(id: string) {
-        const lessonServices = new LessonServices();
+        const lessonRepository = new LessonRepository();
 
-        const lessonExists = await lessonServices.findLessonWithCourseById(id);
+        const lessonExists = await lessonRepository.findLessonWithCourseById(
+            id
+        );
 
         if (!lessonExists) {
-            throw new Error('This lesson does not exist.');
+            throw new AppError('This lesson does not exist.', 404);
         }
 
         if (lessonExists.course.students.length > 0) {
-            throw new Error(
-                'Unable to delete lesson. The course has enrolled students and cannot be deleted.'
+            throw new AppError(
+                'Unable to delete lesson. The course has enrolled students.',
+                409
             );
         }
 
-        await lessonServices.deleteById(id);
+        await lessonRepository.deleteById(id);
     }
 }

@@ -4,7 +4,10 @@ import { CreateLessonUseCase } from './CreateLessonUseCase';
 
 export class CreateLessonController {
     async handle(
-        request: FastifyRequest<{ Body: CreateLessonInput }>,
+        request: FastifyRequest<{
+            Headers: { authorization: string };
+            Body: CreateLessonInput;
+        }>,
         reply: FastifyReply
     ) {
         const data = request.body;

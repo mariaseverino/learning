@@ -20,5 +20,13 @@ export const updateLessonSchemaResponse = z.object({
     done: z.boolean(),
 });
 
+export const getCourseLessonsSchemaResponse = z.array(
+    z.object({
+        id: z.string(),
+        title: z.string(),
+        videoUrl: z.string(),
+    })
+);
+
 export type CreateLessonInput = z.infer<typeof createLessonSchema>;
 export type UpdateLessonInput = z.infer<typeof updateLessonSchema>;

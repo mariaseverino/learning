@@ -1,7 +1,7 @@
 import prisma from '../lib/prisma';
 import { CreateLessonInput, UpdateLessonInput } from './types';
 
-export class LessonServices {
+export class LessonRepository {
     async findById(id: string) {
         return await prisma.lesson.findUnique({
             where: { id },
@@ -43,6 +43,23 @@ export class LessonServices {
                     include: { students: true },
                 },
             },
+        });
+    }
+
+    async completeLessson(lessonId: string, studentId: string) {
+        await prisma.lessonCompletion.create({
+            data: {
+                studentId,
+                lessonId,
+                completed: true,
+            },
+        });
+    }
+
+    async getCourseLessons(courseId: string) {
+        return await prisma.lesson.findMany({
+            include: { course: true },
+            where: { courseId },
         });
     }
 }
