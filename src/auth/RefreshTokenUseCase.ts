@@ -1,6 +1,7 @@
 import prisma from '../lib/prisma';
 import dayjs from 'dayjs';
 import { generateRefreshToken, generateToken } from './providers';
+import { AppError } from '../errors/AppError';
 
 export class RefreshTokenUseCase {
     async execute(refresh_token: string) {
@@ -9,7 +10,7 @@ export class RefreshTokenUseCase {
         });
 
         if (!refreshToken) {
-            throw new Error('Refresh token invalid');
+            throw new AppError('Invalid refresh token.', 401);
         }
 
         const refreshTokenExpired = dayjs().isAfter(

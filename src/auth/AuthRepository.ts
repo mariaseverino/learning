@@ -1,7 +1,7 @@
 import prisma from '../lib/prisma';
 import { CreateUserInput } from './types';
 
-export class AuthServices {
+export class AuthRepository {
     async findByEmail(email: string) {
         return await prisma.user.findUnique({
             where: { email },

@@ -1,27 +1,28 @@
 import { CreateUserInput } from './types';
 import { passwordHashed } from './providers';
-import { AuthServices } from './AuthServices';
+import { AuthRepository } from './AuthRepository';
+import { AppError } from '../errors/AppError';
 
 export class RegisterUserUseCase {
     async execute({ name, email, password }: CreateUserInput) {
-        const authService = new AuthServices();
-        const userAlreadyExists = await authService.findByEmail(email);
+        const authRepository = new AuthRepository();
+        const userAlreadyExists = await authRepository.findByEmail(email);
 
         if (userAlreadyExists) {
-            throw new Error('User already exists');
+            throw new AppError('User already exists.', 409);
         }
 
         const passwordHash = await passwordHashed(password);
 
-        const user = await authService.save({
+        const user = await authRepository.save({
             name,
             email,
             password: passwordHash,
         });
 
-        // const emailService = new EmailService();
+        // const emailRepository = new EmailRepository();
 
-        // await emailService.sendConfirmationEmail(email, token);
+        // await emailRepository.sendConfirmationEmail(email, token);
 
         return {
             id: user.id,

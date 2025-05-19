@@ -1,6 +1,9 @@
 import { AuthRoutes } from './routes/auth';
+import { CategoryRoutes } from './routes/CategoryRoutes';
 import { CourseRoutes } from './routes/course';
+import { InstructorRoutes } from './routes/InstructorRoutes';
 import { LessonRoutes } from './routes/LessonRoutes';
+import { StudentRoutes } from './routes/StudentRoutes';
 import { FastifyTypeInstance } from './types';
 
 // export async function routes(app: FastifyTypeInstance) {
@@ -121,7 +124,13 @@ export async function routes(app: FastifyTypeInstance) {
     const authRoutes = new AuthRoutes(app);
     const courseRoutes = new CourseRoutes(app);
     const lessonRoutes = new LessonRoutes(app);
+    const studentRoutes = new StudentRoutes(app);
+    const instructorRoutes = new InstructorRoutes(app);
+    const categoryRoutes = new CategoryRoutes(app);
     await authRoutes.registerRoutes();
     await courseRoutes.registerRoutes();
     await lessonRoutes.registerRoutes();
+    await studentRoutes.registerRoutes();
+    await instructorRoutes.registerRoutes();
+    await categoryRoutes.registerRoutes();
 }

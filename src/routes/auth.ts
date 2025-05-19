@@ -1,3 +1,4 @@
+import z from 'zod';
 import { AuthenticateUserController } from '../auth/AuthenticateUserController';
 import { RefreshTokenController } from '../auth/RefreshTokenController';
 import { RegisterUserController } from '../auth/RegisterUserController';
@@ -38,6 +39,9 @@ export class AuthRoutes {
                             type: 'object',
                             properties: createUserResponseSchema,
                         },
+                        409: z.object({
+                            message: z.string(),
+                        }),
                     },
                 },
             },

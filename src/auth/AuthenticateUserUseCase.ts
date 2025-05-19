@@ -6,22 +6,23 @@ import {
     generateToken,
     verifyPassword,
 } from './providers';
-import { AuthServices } from './AuthServices';
+import { AuthRepository } from './AuthRepository';
+import { AppError } from '../errors/AppError';
 
 export class AuthenticateUserUseCase {
     // private readonly emailService: EmailService;
-    private readonly authService: AuthServices;
+    private readonly authService: AuthRepository;
 
     constructor() {
         // this.emailService = new EmailService();
-        this.authService = new AuthServices();
+        this.authService = new AuthRepository();
     }
 
     async exexute({ email, password }: AuthenticateUserInput) {
         const userExists = await this.authService.findByEmail(email);
 
         if (!userExists) {
-            throw new Error('Incorrect credentials');
+            throw new AppError('Incorrect credentials', 401);
         }
 
         const passwordMatch = await verifyPassword(
@@ -30,7 +31,7 @@ export class AuthenticateUserUseCase {
         );
 
         if (!passwordMatch) {
-            throw new Error('Incorrect credentials');
+            throw new AppError('Incorrect credentials', 401);
         }
 
         const token = generateToken(userExists.id);
