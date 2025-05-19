@@ -1,18 +1,20 @@
-import { CourseServices } from './CourseServices';
+import { AppError } from '../errors/AppError';
+import { CourseRepository } from './CourseRepository';
 
 export class DeleteCourseUseCase {
     async execute(id: string) {
-        const courseServices = new CourseServices();
+        const courseServices = new CourseRepository();
 
         const courseExists = await courseServices.findById(id);
 
         if (!courseExists) {
-            throw new Error('This course does not exist.');
+            throw new AppError('This course does not exist.', 404);
         }
 
         if (courseExists.students.length > 0) {
-            throw new Error(
-                'Unable to delete course. The course has enrolled students and cannot be deleted.'
+            throw new AppError(
+                'Unable to delete course. There are students enrolled in this course.',
+                409
             );
         }
 

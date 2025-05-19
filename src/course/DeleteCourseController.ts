@@ -3,7 +3,10 @@ import { DeleteCourseUseCase } from './DeleteCourseUseCase';
 
 export class DeleteCourseController {
     async handle(
-        request: FastifyRequest<{ Params: { id: string } }>,
+        request: FastifyRequest<{
+            Headers: { authorization: string };
+            Params: { id: string };
+        }>,
         reply: FastifyReply
     ) {
         const courseId = request.params.id;

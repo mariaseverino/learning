@@ -1,7 +1,7 @@
 import prisma from '../lib/prisma';
 import { CreateCourseInput, UpdateCourseInput } from './types';
 
-export class CourseServices {
+export class CourseRepository {
     async findById(id: string) {
         return await prisma.course.findUnique({
             where: { id },
@@ -15,12 +15,24 @@ export class CourseServices {
         });
     }
 
-    async save({ title, description, thumbnailUrl }: CreateCourseInput) {
+    async save({
+        title,
+        description,
+        thumbnailUrl,
+        categories,
+        instructor,
+    }: CreateCourseInput) {
         return await prisma.course.create({
             data: {
                 title,
                 description,
                 thumbnailUrl,
+                categories: {
+                    connect: categories.map((id: string) => ({ id })),
+                },
+                instructor: {
+                    connect: { id: instructor },
+                },
             },
         });
     }
@@ -43,9 +55,23 @@ export class CourseServices {
     }
 
     async update(id: string, data: UpdateCourseInput) {
+        const { categories, instructor, ...rest } = data;
+
         return await prisma.course.update({
             where: { id },
-            data,
+            data: {
+                ...rest,
+                ...(categories && {
+                    categories: {
+                        set: categories.map((id) => ({ id })),
+                    },
+                }),
+                ...(instructor && {
+                    instructor: {
+                        connect: { id: instructor },
+                    },
+                }),
+            },
         });
     }
 }

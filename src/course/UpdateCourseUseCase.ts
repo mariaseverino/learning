@@ -1,15 +1,16 @@
-import { CourseServices } from './CourseServices';
+import { AppError } from '../errors/AppError';
+import { CourseRepository } from './CourseRepository';
 import { UpdateCourseInput } from './types';
 
 export class UpdateCourseUseCase {
     async execute(courseId: string, data: UpdateCourseInput) {
-        const courseSevices = new CourseServices();
-        const courseExists = courseSevices.findById(courseId);
+        const courseRepository = new CourseRepository();
+        const courseExists = courseRepository.findById(courseId);
 
         if (!courseExists) {
-            throw new Error('This course does not exist.');
+            throw new AppError('This course does not exist.', 404);
         }
 
-        return await courseSevices.update(courseId, data);
+        return await courseRepository.update(courseId, data);
     }
 }

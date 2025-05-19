@@ -5,6 +5,7 @@ import { UpdateCourseUseCase } from './UpdateCourseUseCase';
 export class UpdateCourseController {
     async handle(
         request: FastifyRequest<{
+            Headers: { authorization: string };
             Params: { id: string };
             Body: UpdateCourseInput;
         }>,

@@ -1,8 +1,8 @@
-import { CourseServices } from './CourseServices';
+import { CourseRepository } from './CourseRepository';
 
 export class ListCoursesUseCase {
     async execute() {
-        const courseServices = new CourseServices();
-        return await courseServices.getAllCourses();
+        const courseRepository = new CourseRepository();
+        return await courseRepository.getAllCourses();
     }
 }

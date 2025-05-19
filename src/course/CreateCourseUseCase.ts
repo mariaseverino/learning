@@ -1,14 +1,22 @@
-import { CourseServices } from './CourseServices';
+import { AppError } from '../errors/AppError';
+import { CourseRepository } from './CourseRepository';
 import { CreateCourseInput } from './types';
 
 export class CreateCourseUseCase {
-    async execute({ title, description, thumbnailUrl }: CreateCourseInput) {
-        const courseService = new CourseServices();
+    async execute({
+        title,
+        description,
+        thumbnailUrl,
+        categories,
+        instructor,
+    }: CreateCourseInput) {
+        const courseService = new CourseRepository();
         const curseAlredyExits = await courseService.findByTitle(title);
 
         if (curseAlredyExits) {
-            throw new Error(
-                'This course already exists. Try create a new lesson!'
+            throw new AppError(
+                'This course already exists. Try creating a new lesson instead.',
+                409
             );
         }
 
@@ -16,6 +24,8 @@ export class CreateCourseUseCase {
             title,
             description,
             thumbnailUrl,
+            categories,
+            instructor,
         });
 
         return course;

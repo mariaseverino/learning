@@ -4,6 +4,8 @@ export const createCourseSchema = z.object({
     title: z.string(),
     description: z.string(),
     thumbnailUrl: z.string(),
+    categories: z.array(z.string()),
+    instructor: z.string(),
 });
 
 export const createCourseSchemaResponse = z.object({
@@ -18,6 +20,8 @@ export const getCourseSchemaResponse = z.object({
     title: z.string(),
     description: z.string(),
     thumbnailUrl: z.string(),
+    categories: z.array(z.string()),
+    instructor: z.string(),
     lessons: z.array(
         z.object({
             id: z.string(),
@@ -33,6 +37,8 @@ export const uptadeCourseSchemaResponse = z.object({
     title: z.string().optional(),
     description: z.string().optional(),
     thumbnailUrl: z.string().optional(),
+    categories: z.array(z.string()),
+    instructor: z.string(),
 });
 
 export const params = z.object({

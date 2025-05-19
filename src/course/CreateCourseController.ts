@@ -4,7 +4,10 @@ import { CreateCourseInput } from './types';
 
 export class CreateCourseController {
     async handle(
-        request: FastifyRequest<{ Body: CreateCourseInput }>,
+        request: FastifyRequest<{
+            Headers: { authorization: string };
+            Body: CreateCourseInput;
+        }>,
         reply: FastifyReply
     ) {
         const data = request.body;

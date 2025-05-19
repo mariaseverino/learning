@@ -13,6 +13,7 @@ import { CreateCourseController } from './../course/CreateCourseController';
 import { ensureAuthenticated } from '../middleware/ensure-authenticated';
 import { UpdateCourseController } from '../course/UpdateCourseController';
 import { DeleteCourseController } from '../course/DeleteCourseController';
+import { ensureHasAuthorization } from '../middleware/ensure-has-authorization';
 
 export class CourseRoutes {
     private createCourseController: CreateCourseController;
@@ -34,6 +35,9 @@ export class CourseRoutes {
                 schema: {
                     tags: ['Course'],
                     description: 'Create new course',
+                    headers: z.object({
+                        authorization: z.string(),
+                    }),
                     body: createCourseSchema,
                     response: {
                         201: {
@@ -41,8 +45,12 @@ export class CourseRoutes {
                             type: 'object',
                             properties: createCourseSchemaResponse,
                         },
+                        409: z.object({
+                            message: z.string(),
+                        }),
                     },
                 },
+                preHandler: [ensureAuthenticated, ensureHasAuthorization],
             },
             this.createCourseController.handle
         );
@@ -52,6 +60,9 @@ export class CourseRoutes {
                 schema: {
                     tags: ['Course'],
                     description: 'list courses',
+                    headers: z.object({
+                        authorization: z.string(),
+                    }),
                     response: {
                         201: {
                             description: 'Successful response',
@@ -60,7 +71,7 @@ export class CourseRoutes {
                         },
                     },
                 },
-                // preHandler: ensureAuthenticated,
+                preHandler: [ensureAuthenticated],
             },
             this.listCoursesController.handle
         );
@@ -70,6 +81,9 @@ export class CourseRoutes {
                 schema: {
                     tags: ['Course'],
                     description: 'Update courses',
+                    headers: z.object({
+                        authorization: z.string(),
+                    }),
                     body: uptadeCourseSchemaResponse,
                     params: z.object({
                         id: z.string(),
@@ -82,7 +96,7 @@ export class CourseRoutes {
                         },
                     },
                 },
-                // preHandler: ensureAuthenticated,
+                preHandler: [ensureAuthenticated, ensureHasAuthorization],
             },
             this.updateCourseController.handle
         );
@@ -92,6 +106,9 @@ export class CourseRoutes {
                 schema: {
                     tags: ['Course'],
                     description: 'Deleted courses',
+                    headers: z.object({
+                        authorization: z.string(),
+                    }),
                     params: z.object({
                         id: z.string(),
                     }),
@@ -104,9 +121,12 @@ export class CourseRoutes {
                         404: z.object({
                             message: z.string(),
                         }),
+                        409: z.object({
+                            message: z.string(),
+                        }),
                     },
                 },
-                // preHandler: ensureAuthenticated,
+                preHandler: [ensureAuthenticated, ensureHasAuthorization],
             },
             this.deleteCourseController.handle
         );
